@@ -406,10 +406,9 @@ SettingsTab:CreateToggle({
    end
 })
 
--- ====================== PETS (WORKING) ======================
+-- ====================== PETS (WORKING - FIXED) ======================
 local PlaceObject = Remotes:WaitForChild("PlaceObject")
 local PickupObject = Remotes:FindFirstChild("PickupObject")
-local PlaceResult = Remotes:WaitForChild("PlaceResult")
 local PET_NAMES = {"Baby Dragon", "Cat", "Monkey", "Alien", "Dog", "Rat", "Worm", "Kangaroo"}
 
 local function getPetBaseName(tool)
@@ -461,27 +460,42 @@ local function getPlacedPetNames()
     return names
 end
 
+-- ========== ИСПРАВЛЕННАЯ ФУНКЦИЯ УСТАНОВКИ ==========
 local function placePet(petTool)
     if not petTool then return false end
     
     local baseName = getPetBaseName(petTool)
+    print("🐶 Ставим: " .. petTool.Name .. " (чистое имя: " .. baseName .. ")")
+    
+    -- Экипируем пета
     petTool.Parent = LocalPlayer.Character
     task.wait(0.5)
     
+    -- Получаем позицию мыши
     local mouse = LocalPlayer:GetMouse()
     local pos = mouse.Hit.p
+    
+    -- Получаем участок и Pivot
     local lot = getPlayerLot()
     local pivotPart = lot and lot:FindFirstChild("Important") and lot.Important:FindFirstChild("Pivot")
     
     if pivotPart then
         local relativePos = pivotPart.CFrame:ToObjectSpace(CFrame.new(pos))
-        pcall(function() PlaceObject:FireServer(baseName, relativePos) end)
+        pcall(function()
+            PlaceObject:FireServer(baseName, relativePos)
+            print("📡 Отправлено (относительная позиция)")
+        end)
     else
-        pcall(function() PlaceObject:FireServer(baseName, pos) end)
+        pcall(function()
+            PlaceObject:FireServer(baseName, pos)
+            print("📡 Отправлено (абсолютная позиция)")
+        end)
     end
+    
     task.wait(0.3)
     return true
 end
+-- ===============================================
 
 local function collectPet(petObject)
     if PickupObject then
