@@ -406,30 +406,10 @@ SettingsTab:CreateToggle({
    end
 })
 
--- ====================== PETS (РАБОЧАЯ ВЕРСИЯ) ======================
+-- ====================== PETS (ТОЛЬКО АВТО-СБОР) ======================
 local PlaceObject = Remotes:WaitForChild("PlaceObject")
 local PickupObject = Remotes:FindFirstChild("PickupObject")
 local PET_NAMES = {"Baby Dragon", "Cat", "Monkey", "Alien", "Dog", "Rat", "Worm", "Kangaroo"}
-
-local function getPetBaseName(tool)
-    local name = tool.Name
-    return name:match("^(.-)%s*%(x%d+%)$") or name
-end
-
-local function getInventoryPets()
-    local pets = {}
-    for _, tool in ipairs(LocalPlayer.Backpack:GetChildren()) do
-        if tool:IsA("Tool") then
-            for _, petName in ipairs(PET_NAMES) do
-                if tool.Name:find(petName) then
-                    table.insert(pets, tool)
-                    break
-                end
-            end
-        end
-    end
-    return pets
-end
 
 local function getPlacedPets()
     local lot = getPlayerLot()
@@ -446,45 +426,6 @@ local function getPlacedPets()
     return pets
 end
 
-local function getPlacedPetNames()
-    local pets = getPlacedPets()
-    local names = {}
-    for _, pet in ipairs(pets) do
-        for _, petName in ipairs(PET_NAMES) do
-            if pet.Name:find(petName) then
-                names[petName] = true
-                break
-            end
-        end
-    end
-    return names
-end
-
-local function placePet(petTool)
-    if not petTool then return false end
-    
-    local baseName = getPetBaseName(petTool)
-    print("🐶 Ставим: " .. petTool.Name .. " (чистое имя: " .. baseName .. ")")
-    
-    petTool.Parent = LocalPlayer.Character
-    task.wait(0.5)
-    
-    local mouse = LocalPlayer:GetMouse()
-    local pos = mouse.Hit.p
-    local lot = getPlayerLot()
-    local pivotPart = lot and lot:FindFirstChild("Important") and lot.Important:FindFirstChild("Pivot")
-    
-    if pivotPart then
-        local relativePos = pivotPart.CFrame:ToObjectSpace(CFrame.new(pos))
-        pcall(function() PlaceObject:FireServer(baseName, relativePos) end)
-    else
-        pcall(function() PlaceObject:FireServer(baseName, pos) end)
-    end
-    
-    task.wait(0.3)
-    return true
-end
-
 local function collectPet(petObject)
     if PickupObject then
         pcall(function() PickupObject:FireServer(petObject) end)
@@ -492,64 +433,14 @@ local function collectPet(petObject)
 end
 
 local autoCollectPets = false
-local selectedPets = {}
 
 PetsTab:CreateLabel("🐾 Pet Automation")
+PetsTab:CreateLabel("📌 Only Auto-Collect (Place function removed)")
 
 PetsTab:CreateToggle({
    Name = "Auto-Collect from Pets 🎒",
    CurrentValue = false,
    Callback = function(v) autoCollectPets = v end
-})
-
-PetsTab:CreateDropdown({
-   Name = "Select Pets to Place 🐶",
-   Options = {"Baby Dragon", "Cat", "Monkey", "Alien", "Dog", "Rat", "Worm", "Kangaroo"},
-   MultipleOptions = true,
-   CurrentOption = {},
-   Callback = function(Options) selectedPets = Options end
-})
-
-PetsTab:CreateButton({
-   Name = "🐶 PLACE SELECTED PETS (MAX 5)",
-   Callback = function()
-       task.spawn(function()
-           if #selectedPets == 0 then
-               print("❌ Select pets from dropdown first!")
-               return
-           end
-           
-           local placed = 0
-           for attempt = 1, 10 do
-               if placed >= 5 then break end
-               if #getPlacedPets() >= 5 then break end
-               
-               local placedNames = getPlacedPetNames()
-               local inventoryPets = getInventoryPets()
-               local foundPet = nil
-               
-               for _, petTool in ipairs(inventoryPets) do
-                   for _, selectedName in ipairs(selectedPets) do
-                       if petTool.Name:find(selectedName) and not placedNames[selectedName] then
-                           foundPet = petTool
-                           break
-                       end
-                   end
-                   if foundPet then break end
-               end
-               
-               if foundPet then
-                   if placePet(foundPet) then
-                       placed = placed + 1
-                       task.wait(0.5)
-                   end
-               else
-                   break
-               end
-           end
-           print("✅ Placed: " .. placed .. " / 5")
-       end)
-   end
 })
 
 task.spawn(function()
