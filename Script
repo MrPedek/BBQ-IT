@@ -469,7 +469,7 @@ task.spawn(function()
                                 shouldTake = true
                             end
                         end
-     task.spawn(function()
+task.spawn(function()
     while true do
         task.wait(1)
         if AutoBuyEnabled and #SelectedMeats > 0 then
