@@ -469,6 +469,62 @@ task.spawn(function()
                                 shouldTake = true
                             end
                         end
+                        if shouldTake then
+                            pcall(function() PickupMeatRemote:FireServer(spot) end)
+                            task.wait(0.15)
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
+
+task.spawn(function()
+    while true do
+        task.wait(0.2)
+        if AutoPlaceEnabled then
+            local cookedMeat = nil
+            for _, container in ipairs({LocalPlayer.Backpack, LocalPlayer.Character}) do
+                if container then
+                    for _, tool in ipairs(container:GetChildren()) do
+                        if tool:IsA("Tool") then
+                            local name = tool.Name:lower()
+                            if name:find("cooked") or name:find("perfect") or name:find("overcooked") then
+                                cookedMeat = tool
+                                break
+                            end
+                        end
+                    end
+                end
+                if cookedMeat then break end
+            end
+            
+            if cookedMeat then
+                if cookedMeat.Parent ~= LocalPlayer.Character then
+                    cookedMeat.Parent = LocalPlayer.Character
+                    task.wait(0.1)
+                end
+                local tables = getTables()
+                for _, table in ipairs(tables) do
+                    local free = true
+                    for _, child in ipairs(table:GetChildren()) do
+                        if child:IsA("Model") then
+                            free = false
+                            break
+                        end
+                    end
+                    if free then
+                        pcall(function() PlaceObjectRemote:FireServer(table, cookedMeat.Name) end)
+                        task.wait(0.15)
+                        break
+                    end
+                end
+            end
+        end
+    end
+end)
+
 task.spawn(function()
     while true do
         task.wait(1)
