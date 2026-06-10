@@ -565,14 +565,6 @@ task.spawn(function()
     end
 end)
 
--- ===============================================
-
-local function collectPet(petObject)
-    if PickupObject then
-        pcall(function() PickupObject:FireServer(petObject) end)
-    end
-end
-
 -- ====================== MAIN LOOPS ======================
 task.spawn(function()
     while true do
