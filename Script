@@ -52,7 +52,6 @@ local ShopTab = Window:CreateTab("🛒 Shop", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362458)
 
 AutomationTab:CreateLabel("✅ Working: Auto-Buy, Auto-Sell, Auto-Place Tables")
-AutomationTab:CreateLabel("⚠️ Below functions are NOT WORKING (WIP)")
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -234,7 +233,6 @@ AutomationTab:CreateToggle({
 })
 
 AutomationTab:CreateSection("🍳 Grill & Smoker Automation")
-AutomationTab:CreateLabel("⚠️ Below functions are NOT WORKING")
 AutomationTab:CreateDropdown({
    Name = "Target Cooking Stations 🏪",
    Options = { "Grill", "Smoker" },
@@ -243,12 +241,12 @@ AutomationTab:CreateDropdown({
    Callback = function(Options) SelectedCookingStations = Options end,
 })
 AutomationTab:CreateToggle({
-   Name = "Auto-Load Meat onto Cooking Stations 🥩 (NOT WORKING)",
+   Name = "Auto-Load Meat onto Cooking Stations 🥩",
    CurrentValue = false,
    Callback = function(v) AutoLoadApplianceEnabled = v end
 })
 
-AutomationTab:CreateSection("🥩 Auto-Harvest Settings (NOT WORKING)")
+AutomationTab:CreateSection("🥩 Auto-Harvest Settings")
 AutomationTab:CreateToggle({
    Name = "Enable Auto-Harvest 🌾",
    CurrentValue = false,
@@ -699,6 +697,6 @@ end)
 task.spawn(function()
     task.wait(2)
     pcall(function() Window:ModifyTheme(ChosenTheme) end)
-    pcall(function() Window.ModifyTheme(ChosenTheme) end)
+    pcall(function() Window:ModifyTheme(ChosenTheme) end)
     ApplyThemeRealtime(ChosenTheme)
 end)
