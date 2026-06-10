@@ -406,16 +406,32 @@ SettingsTab:CreateToggle({
    end
 })
 
--- ====================== PETS (WORKING - FIXED) ======================
+-- ====================== PETS (РАБОЧАЯ ВЕРСИЯ ИЗ ТЕСТА) ======================
 local PlaceObject = Remotes:WaitForChild("PlaceObject")
 local PickupObject = Remotes:FindFirstChild("PickupObject")
 local PET_NAMES = {"Baby Dragon", "Cat", "Monkey", "Alien", "Dog", "Rat", "Worm", "Kangaroo"}
 
+-- Получить чистое имя пета (без x8)
 local function getPetBaseName(tool)
     local name = tool.Name
     return name:match("^(.-)%s*%(x%d+%)$") or name
 end
 
+-- Получить первого пета в инвентаре (для теста)
+local function getFirstPet()
+    for _, tool in ipairs(LocalPlayer.Backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            for _, petName in ipairs(PET_NAMES) do
+                if tool.Name:find(petName) then
+                    return tool
+                end
+            end
+        end
+    end
+    return nil
+end
+
+-- Получить всех петов в инвентаре
 local function getInventoryPets()
     local pets = {}
     for _, tool in ipairs(LocalPlayer.Backpack:GetChildren()) do
@@ -431,6 +447,7 @@ local function getInventoryPets()
     return pets
 end
 
+-- Получить петов на участке
 local function getPlacedPets()
     local lot = getPlayerLot()
     if not lot then return {} end
@@ -446,6 +463,7 @@ local function getPlacedPets()
     return pets
 end
 
+-- Получить названия петов на участке
 local function getPlacedPetNames()
     local pets = getPlacedPets()
     local names = {}
@@ -460,15 +478,19 @@ local function getPlacedPetNames()
     return names
 end
 
--- ========== ИСПРАВЛЕННАЯ ФУНКЦИЯ УСТАНОВКИ ==========
+-- ========== УСТАНОВКА ПЕТА (ТОЧНО КАК В ТЕСТОВОМ СКРИПТЕ) ==========
 local function placePet(petTool)
-    if not petTool then return false end
+    if not petTool then 
+        print("❌ Нет пета в инвентаре")
+        return false 
+    end
     
     local baseName = getPetBaseName(petTool)
     print("🐶 Ставим: " .. petTool.Name .. " (чистое имя: " .. baseName .. ")")
     
     -- Экипируем пета
     petTool.Parent = LocalPlayer.Character
+    print("📌 Пет экипирован, ждём 0.5 сек...")
     task.wait(0.5)
     
     -- Получаем позицию мыши
@@ -476,27 +498,28 @@ local function placePet(petTool)
     local pos = mouse.Hit.p
     
     -- Получаем участок и Pivot
-    local lot = getPlayerLot()
+    local lot = workspace:FindFirstChild("PlayerLots") and workspace.PlayerLots:FindFirstChild(LocalPlayer.Name)
     local pivotPart = lot and lot:FindFirstChild("Important") and lot.Important:FindFirstChild("Pivot")
     
     if pivotPart then
         local relativePos = pivotPart.CFrame:ToObjectSpace(CFrame.new(pos))
         pcall(function()
             PlaceObject:FireServer(baseName, relativePos)
-            print("📡 Отправлено (относительная позиция)")
+            print("📡 Отправлено (относительная позиция): " .. baseName)
         end)
     else
         pcall(function()
             PlaceObject:FireServer(baseName, pos)
-            print("📡 Отправлено (абсолютная позиция)")
+            print("📡 Отправлено (абсолютная позиция): " .. baseName)
         end)
     end
     
     task.wait(0.3)
     return true
 end
--- ===============================================
+-- ============================================================
 
+-- Сбор пета
 local function collectPet(petObject)
     if PickupObject then
         pcall(function() PickupObject:FireServer(petObject) end)
@@ -574,6 +597,40 @@ task.spawn(function()
         end
     end
 end)
+
+-- ТЕСТОВАЯ КНОПКА (для проверки, чтобы убедиться что работает)
+local testGui = Instance.new("ScreenGui")
+testGui.Name = "TestPetBtn"
+testGui.ResetOnSpawn = false
+
+local testBtn = Instance.new("TextButton")
+testBtn.Size = UDim2.new(0, 200, 0, 50)
+testBtn.Position = UDim2.new(0.5, -100, 0.75, 0)
+testBtn.Text = "🧪 ТЕСТ: ПОСТАВИТЬ ПЕТА"
+testBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 200)
+testBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+testBtn.MouseButton1Click:Connect(function()
+    local pet = getFirstPet()
+    if pet then
+        placePet(pet)
+    else
+        print("❌ Нет петов в инвентаре!")
+    end
+end)
+
+testBtn.Parent = testGui
+testGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+print("✅ Тестовая кнопка создана! Нажми на синюю кнопку в игре")
+
+-- ===============================================
+
+local function collectPet(petObject)
+    if PickupObject then
+        pcall(function() PickupObject:FireServer(petObject) end)
+    end
+end
 
 -- ====================== MAIN LOOPS ======================
 task.spawn(function()
