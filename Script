@@ -1,7 +1,4 @@
--- ====================== ZOV HUB | BBQ IT + PETS (ПУСТАЯ ВКЛАДКА) ======================
--- ⚠️ Auto-Harvest и множественная установка мяса временно не работают
--- ✅ Добавлена пустая вкладка Pets для будущих функций
-
+-- ====================== ZOV HUB | BBQ IT + PETS (ФИНАЛ) ======================
 local coreGui = game:GetService("CoreGui")
 if coreGui:FindFirstChild("Rayfield") then
     coreGui.Rayfield:Destroy()
@@ -49,46 +46,14 @@ local Window = Rayfield:CreateWindow({
    KeySystem = false
 })
 
--- ПОРЯДОК ВКЛАДОК: Automation → Pets → Shop → Settings
 local AutomationTab = Window:CreateTab("🤖 Automation", 4483362458)
-local PetsTab = Window:CreateTab("🐕 Pets", 4483362458)
+local PetsTab = Window:CreateTab("🐶 Pets", 4483362458)
 local ShopTab = Window:CreateTab("🛒 Shop", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362458)
 
 AutomationTab:CreateLabel("⚠️ Auto-Harvest и множественная установка НЕ РАБОТАЮТ")
 AutomationTab:CreateLabel("✅ Работает: авто-покупка, авто-продажа, авто-плейс на столы")
 
--- ====================== ВКЛАДКА PETS (ПУСТАЯ) ======================
-PetsTab:CreateLabel("🐾 Функции для петов будут добавлены позже")
-PetsTab:CreateLabel("📌 Здесь появятся авто-кормление, сбор и другие возможности")
-
--- ====================== НАСТРОЙКИ (АНТИ-АФК) ======================
-local vu = game:GetService("VirtualUser")
-local antiAFKEnabled = false
-
-local function startAntiAFK()
-    if antiAFKEnabled then
-        game:GetService("Players").LocalPlayer.Idled:Connect(function()
-            vu:CaptureController()
-            vu:ClickButton2(Vector2.new())
-        end)
-    end
-end
-
-SettingsTab:CreateSection("🛡️ Защита")
-SettingsTab:CreateToggle({
-   Name = "Анти-АФК",
-   CurrentValue = false,
-   Callback = function(v)
-        antiAFKEnabled = v
-        if antiAFKEnabled then
-            vu:CaptureController()
-            startAntiAFK()
-        end
-   end
-})
-
--- ====================== ОСТАЛЬНЫЕ ВКЛАДКИ (БЕЗ ИЗМЕНЕНИЙ) ======================
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -418,8 +383,131 @@ SettingsTab:CreateDropdown({
    end,
 })
 
--- ====================== ОСНОВНЫЕ ЛУПЫ ======================
+-- ====================== PETS ФУНКЦИИ ======================
+local PlayersP = game:GetService("Players")
+local LocalPlayerP = PlayersP.LocalPlayer
+local ReplicatedStorageP = game:GetService("ReplicatedStorage")
+local RemotesP = ReplicatedStorageP:WaitForChild("Remotes")
+local vim = game:GetService("VirtualInputManager")
 
+local PickupObject = RemotesP:FindFirstChild("PickupObject")
+local PET_NAMES = {"Baby Dragon", "Cat", "Dog", "Worm", "Monkey", "Alien", "Kangaroo", "Rat"}
+
+local function clickPlaceButton()
+    local playerGui = LocalPlayerP:FindFirstChild("PlayerGui")
+    if playerGui then
+        local placementGui = playerGui:FindFirstChild("PlacementMobileGui")
+        if placementGui then
+            local placeBtn = placementGui:FindFirstChild("PlaceBtn")
+            if placeBtn and placeBtn:IsA("TextButton") then
+                local pos = placeBtn.AbsolutePosition
+                local size = placeBtn.AbsoluteSize
+                local x = pos.X + size.X/2
+                local y = pos.Y + size.Y/2
+                pcall(function()
+                    vim:SendMouseButtonEvent(x, y, 0, true, game, 0)
+                    task.wait(0.05)
+                    vim:SendMouseButtonEvent(x, y, 0, false, game, 0)
+                end)
+                return true
+            end
+        end
+    end
+    return false
+end
+
+local function getInventoryPets()
+    local pets = {}
+    for _, tool in ipairs(LocalPlayerP.Backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            for _, petName in ipairs(PET_NAMES) do
+                if tool.Name:find(petName) then
+                    table.insert(pets, tool)
+                    break
+                end
+            end
+        end
+    end
+    return pets
+end
+
+local function getPlacedPets()
+    local lot = workspace:FindFirstChild("PlayerLots") and workspace.PlayerLots:FindFirstChild(LocalPlayerP.Name)
+    if not lot then return {} end
+    local pets = {}
+    for _, obj in ipairs(lot:GetChildren()) do
+        for _, petName in ipairs(PET_NAMES) do
+            if obj.Name == petName .. "_Placed" or obj.Name:find(petName) then
+                table.insert(pets, obj)
+                break
+            end
+        end
+    end
+    return pets
+end
+
+local function placePet(petTool)
+    if not petTool then return false end
+    petTool.Parent = LocalPlayerP.Character
+    task.wait(0.15)
+    return clickPlaceButton()
+end
+
+local function collectPet(petObject)
+    if PickupObject then
+        pcall(function()
+            PickupObject:FireServer(petObject)
+        end)
+    end
+end
+
+local autoCollectPets = false
+
+PetsTab:CreateLabel("🐾 Автоматизация петов")
+
+PetsTab:CreateToggle({
+   Name = "Авто-сбор с петов 🎒",
+   CurrentValue = false,
+   Callback = function(v) autoCollectPets = v end
+})
+
+PetsTab:CreateButton({
+   Name = "🐶 ПОСТАВИТЬ ВСЕХ ПЕТОВ (до 5 шт)",
+   Callback = function()
+       local currentPets = getPlacedPets()
+       if #currentPets >= 5 then
+           print("❌ Уже 5 петов на участке")
+           return
+       end
+       local inventoryPets = getInventoryPets()
+       local placed = 0
+       for _, petTool in ipairs(inventoryPets) do
+           if #getPlacedPets() >= 5 then break end
+           if placePet(petTool) then
+               placed = placed + 1
+               task.wait(0.3)
+           end
+       end
+       print("✅ Поставлено петов: " .. placed)
+   end
+})
+
+PetsTab:CreateLabel("📌 Максимум петов на участке: 5")
+
+task.spawn(function()
+    while true do
+        task.wait(2)
+        if autoCollectPets then
+            local pets = getPlacedPets()
+            for _, pet in ipairs(pets) do
+                collectPet(pet)
+                task.wait(0.3)
+            end
+        end
+    end
+end)
+
+-- ====================== ОСНОВНЫЕ ЛУПЫ ======================
 task.spawn(function()
     while true do
         task.wait(0.3)
