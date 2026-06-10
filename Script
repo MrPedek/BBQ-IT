@@ -1,6 +1,6 @@
--- ====================== ZOV HUB | СТАБИЛЬНАЯ ВЕРСИЯ + АНТИ-АФК ======================
+-- ====================== ZOV HUB | BBQ IT + PETS (ПУСТАЯ ВКЛАДКА) ======================
 -- ⚠️ Auto-Harvest и множественная установка мяса временно не работают
--- ✅ Добавлен анти-АФК (вкладка Misc)
+-- ✅ Добавлена пустая вкладка Pets для будущих функций
 
 local coreGui = game:GetService("CoreGui")
 if coreGui:FindFirstChild("Rayfield") then
@@ -49,32 +49,35 @@ local Window = Rayfield:CreateWindow({
    KeySystem = false
 })
 
+-- ПОРЯДОК ВКЛАДОК: Automation → Pets → Shop → Settings
 local AutomationTab = Window:CreateTab("🤖 Automation", 4483362458)
+local PetsTab = Window:CreateTab("🐕 Pets", 4483362458)
 local ShopTab = Window:CreateTab("🛒 Shop", 4483362458)
-local MiscTab = Window:CreateTab("🎮 Misc", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362458)
 
 AutomationTab:CreateLabel("⚠️ Auto-Harvest и множественная установка НЕ РАБОТАЮТ")
 AutomationTab:CreateLabel("✅ Работает: авто-покупка, авто-продажа, авто-плейс на столы")
 
--- ====================== АНТИ-АФК (БЕЗ ГУИ) ======================
+-- ====================== ВКЛАДКА PETS (ПУСТАЯ) ======================
+PetsTab:CreateLabel("🐾 Функции для петов будут добавлены позже")
+PetsTab:CreateLabel("📌 Здесь появятся авто-кормление, сбор и другие возможности")
+
+-- ====================== НАСТРОЙКИ (АНТИ-АФК) ======================
 local vu = game:GetService("VirtualUser")
 local antiAFKEnabled = false
 
 local function startAntiAFK()
     if antiAFKEnabled then
-        local connection
-        connection = game:GetService("Players").LocalPlayer.Idled:Connect(function()
+        game:GetService("Players").LocalPlayer.Idled:Connect(function()
             vu:CaptureController()
             vu:ClickButton2(Vector2.new())
         end)
-        return connection
     end
-    return nil
 end
 
-MiscTab:CreateToggle({
-   Name = "🛡️ Анти-АФК",
+SettingsTab:CreateSection("🛡️ Защита")
+SettingsTab:CreateToggle({
+   Name = "Анти-АФК",
    CurrentValue = false,
    Callback = function(v)
         antiAFKEnabled = v
@@ -85,7 +88,7 @@ MiscTab:CreateToggle({
    end
 })
 
--- ====================== ОСТАЛЬНЫЕ ВКЛАДКИ ======================
+-- ====================== ОСТАЛЬНЫЕ ВКЛАДКИ (БЕЗ ИЗМЕНЕНИЙ) ======================
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -397,9 +400,9 @@ ShopTab:CreateToggle({
    Callback = function(v) AutoTotemsEnabled = v end
 })
 
-SettingsTab:CreateSection("🎨 Real-Time Interface Styling")
+SettingsTab:CreateSection("🎨 Интерфейс")
 SettingsTab:CreateDropdown({
-   Name = "Change UI Theme 🌈",
+   Name = "Сменить тему 🌈",
    Options = {"MidnightPurple", "PhantomBlue", "BloodMoon", "ArcticWhite", "VoidGreen", "SunsetOrange", "RoseGold"},
    CurrentOption = {"MidnightPurple"},
    MultipleOptions = false,
@@ -466,18 +469,7 @@ task.spawn(function()
                                 shouldTake = true
                             end
                         end
-                        if shouldTake then
-                            pcall(function() PickupMeatRemote:FireServer(spot) end)
-                            task.wait(0.15)
-                        end
-                    end
-                end
-            end
-        end
-    end
-end)
-
-task.spawn(function()
+     task.spawn(function()
     while true do
         task.wait(1)
         if AutoBuyEnabled and #SelectedMeats > 0 then
