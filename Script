@@ -1,4 +1,4 @@
--- ====================== ZOV HUB | BBQ IT + PETS (ФИНАЛ) ======================
+-- ====================== ZOV HUB | BBQ IT (FULL FIXED) ======================
 local coreGui = game:GetService("CoreGui")
 if coreGui:FindFirstChild("Rayfield") then
     coreGui.Rayfield:Destroy()
@@ -51,8 +51,8 @@ local PetsTab = Window:CreateTab("🐶 Pets", 4483362458)
 local ShopTab = Window:CreateTab("🛒 Shop", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362458)
 
-AutomationTab:CreateLabel("⚠️ Auto-Harvest и множественная установка НЕ РАБОТАЮТ")
-AutomationTab:CreateLabel("✅ Работает: авто-покупка, авто-продажа, авто-плейс на столы")
+AutomationTab:CreateLabel("✅ Working: Auto-Buy, Auto-Sell, Auto-Place Tables")
+AutomationTab:CreateLabel("⚠️ Below functions are NOT WORKING (WIP)")
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -234,7 +234,7 @@ AutomationTab:CreateToggle({
 })
 
 AutomationTab:CreateSection("🍳 Grill & Smoker Automation")
-AutomationTab:CreateLabel("⚠️ Ниже функции временно НЕ РАБОТАЮТ")
+AutomationTab:CreateLabel("⚠️ Below functions are NOT WORKING")
 AutomationTab:CreateDropdown({
    Name = "Target Cooking Stations 🏪",
    Options = { "Grill", "Smoker" },
@@ -243,12 +243,12 @@ AutomationTab:CreateDropdown({
    Callback = function(Options) SelectedCookingStations = Options end,
 })
 AutomationTab:CreateToggle({
-   Name = "Auto-Load Meat onto Cooking Stations 🥩 (НЕ РАБОТАЕТ)",
+   Name = "Auto-Load Meat onto Cooking Stations 🥩 (NOT WORKING)",
    CurrentValue = false,
    Callback = function(v) AutoLoadApplianceEnabled = v end
 })
 
-AutomationTab:CreateSection("🥩 Auto-Harvest Settings (НЕ РАБОТАЕТ)")
+AutomationTab:CreateSection("🥩 Auto-Harvest Settings (NOT WORKING)")
 AutomationTab:CreateToggle({
    Name = "Enable Auto-Harvest 🌾",
    CurrentValue = false,
@@ -256,8 +256,8 @@ AutomationTab:CreateToggle({
 })
 AutomationTab:CreateDropdown({
    Name = "Harvest Type 📋",
-   Options = {"Cooked (включая Perfect)", "Perfect (только Perfect)"},
-   CurrentOption = {"Cooked (включая Perfect)"},
+   Options = {"Cooked (including Perfect)", "Perfect only"},
+   CurrentOption = {"Cooked (including Perfect)"},
    MultipleOptions = false,
    Callback = function(Option)
       local opt = type(Option) == "table" and Option[1] or Option
@@ -365,9 +365,9 @@ ShopTab:CreateToggle({
    Callback = function(v) AutoTotemsEnabled = v end
 })
 
-SettingsTab:CreateSection("🎨 Интерфейс")
+SettingsTab:CreateSection("🎨 Interface")
 SettingsTab:CreateDropdown({
-   Name = "Сменить тему 🌈",
+   Name = "Change UI Theme 🌈",
    Options = {"MidnightPurple", "PhantomBlue", "BloodMoon", "ArcticWhite", "VoidGreen", "SunsetOrange", "RoseGold"},
    CurrentOption = {"MidnightPurple"},
    MultipleOptions = false,
@@ -383,7 +383,7 @@ SettingsTab:CreateDropdown({
    end,
 })
 
--- ====================== PETS ФУНКЦИИ ======================
+-- ====================== PETS FUNCTIONS ======================
 local PlayersP = game:GetService("Players")
 local LocalPlayerP = PlayersP.LocalPlayer
 local ReplicatedStorageP = game:GetService("ReplicatedStorage")
@@ -391,7 +391,7 @@ local RemotesP = ReplicatedStorageP:WaitForChild("Remotes")
 local vim = game:GetService("VirtualInputManager")
 
 local PickupObject = RemotesP:FindFirstChild("PickupObject")
-local PET_NAMES = {"Baby Dragon", "Cat", "Dog", "Worm", "Monkey", "Alien", "Kangaroo", "Rat"}
+local PET_NAMES = {"Baby Dragon", "Cat", "Monkey", "Alien", "Dog", "Rat", "Worm", "Kangaroo"}
 
 local function clickPlaceButton()
     local playerGui = LocalPlayerP:FindFirstChild("PlayerGui")
@@ -416,12 +416,12 @@ local function clickPlaceButton()
     return false
 end
 
-local function getInventoryPets()
+local function getSelectedInventoryPets(selectedNames)
     local pets = {}
     for _, tool in ipairs(LocalPlayerP.Backpack:GetChildren()) do
         if tool:IsA("Tool") then
-            for _, petName in ipairs(PET_NAMES) do
-                if tool.Name:find(petName) then
+            for _, selectedName in ipairs(selectedNames) do
+                if tool.Name:find(selectedName) then
                     table.insert(pets, tool)
                     break
                 end
@@ -431,19 +431,19 @@ local function getInventoryPets()
     return pets
 end
 
-local function getPlacedPets()
+local function getPlacedPetNames()
     local lot = workspace:FindFirstChild("PlayerLots") and workspace.PlayerLots:FindFirstChild(LocalPlayerP.Name)
     if not lot then return {} end
-    local pets = {}
+    local names = {}
     for _, obj in ipairs(lot:GetChildren()) do
         for _, petName in ipairs(PET_NAMES) do
             if obj.Name == petName .. "_Placed" or obj.Name:find(petName) then
-                table.insert(pets, obj)
+                names[petName] = true
                 break
             end
         end
     end
-    return pets
+    return names
 end
 
 local function placePet(petTool)
@@ -455,59 +455,82 @@ end
 
 local function collectPet(petObject)
     if PickupObject then
-        pcall(function()
-            PickupObject:FireServer(petObject)
-        end)
+        pcall(function() PickupObject:FireServer(petObject) end)
     end
 end
 
 local autoCollectPets = false
+local selectedPets = {}
 
-PetsTab:CreateLabel("🐾 Автоматизация петов")
+PetsTab:CreateLabel("🐾 Pet Automation")
 
 PetsTab:CreateToggle({
-   Name = "Авто-сбор с петов 🎒",
+   Name = "Auto-Collect from Pets 🎒",
    CurrentValue = false,
    Callback = function(v) autoCollectPets = v end
 })
 
+PetsTab:CreateDropdown({
+   Name = "Select Pets to Place 🐶",
+   Options = {"Baby Dragon", "Cat", "Monkey", "Alien", "Dog", "Rat", "Worm", "Kangaroo"},
+   MultipleOptions = true,
+   CurrentOption = {},
+   Callback = function(Options) selectedPets = Options end
+})
+
 PetsTab:CreateButton({
-   Name = "🐶 ПОСТАВИТЬ ВСЕХ ПЕТОВ (до 5 шт)",
+   Name = "🐶 PLACE SELECTED PETS",
    Callback = function()
-       local currentPets = getPlacedPets()
-       if #currentPets >= 5 then
-           print("❌ Уже 5 петов на участке")
+       if #selectedPets == 0 then
+           print("❌ Select pets from dropdown first!")
            return
        end
-       local inventoryPets = getInventoryPets()
+       
+       local placedPets = getPlacedPetNames()
+       local inventoryPets = getSelectedInventoryPets(selectedPets)
        local placed = 0
+       
        for _, petTool in ipairs(inventoryPets) do
-           if #getPlacedPets() >= 5 then break end
-           if placePet(petTool) then
-               placed = placed + 1
-               task.wait(0.3)
+           local alreadyPlaced = false
+           for _, petName in ipairs(selectedPets) do
+               if petTool.Name:find(petName) and placedPets[petName] then
+                   alreadyPlaced = true
+                   break
+               end
+           end
+           if not alreadyPlaced then
+               if placePet(petTool) then
+                   placed = placed + 1
+                   task.wait(0.3)
+               end
            end
        end
-       print("✅ Поставлено петов: " .. placed)
+       print("✅ Placed pets: " .. placed)
    end
 })
 
-PetsTab:CreateLabel("📌 Максимум петов на участке: 5")
+PetsTab:CreateLabel("📌 Max 5 pets can be placed at once")
 
 task.spawn(function()
     while true do
         task.wait(2)
         if autoCollectPets then
-            local pets = getPlacedPets()
-            for _, pet in ipairs(pets) do
-                collectPet(pet)
-                task.wait(0.3)
+            local lot = workspace:FindFirstChild("PlayerLots") and workspace.PlayerLots:FindFirstChild(LocalPlayerP.Name)
+            if lot then
+                for _, obj in ipairs(lot:GetChildren()) do
+                    for _, petName in ipairs(PET_NAMES) do
+                        if obj.Name == petName .. "_Placed" or obj.Name:find(petName) then
+                            collectPet(obj)
+                            task.wait(0.3)
+                        end
+                    end
+                end
             end
         end
     end
 end)
 
--- ====================== ОСНОВНЫЕ ЛУПЫ ======================
+-- ====================== MAIN LOOPS ======================
 task.spawn(function()
     while true do
         task.wait(0.3)
