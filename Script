@@ -1,4 +1,4 @@
--- ====================== ZOV HUB | BBQ IT (FULL FIXED) ======================
+-- ====================== ZOV HUB | BBQ IT (FINAL) ======================
 local coreGui = game:GetService("CoreGui")
 if coreGui:FindFirstChild("Rayfield") then
     coreGui.Rayfield:Destroy()
@@ -383,45 +383,48 @@ SettingsTab:CreateDropdown({
    end,
 })
 
--- ====================== PETS FUNCTIONS ======================
-local PlayersP = game:GetService("Players")
-local LocalPlayerP = PlayersP.LocalPlayer
-local ReplicatedStorageP = game:GetService("ReplicatedStorage")
-local RemotesP = ReplicatedStorageP:WaitForChild("Remotes")
-local vim = game:GetService("VirtualInputManager")
+SettingsTab:CreateSection("🛡️ Protection")
+local vu = game:GetService("VirtualUser")
+local antiAFKEnabled = false
 
-local PickupObject = RemotesP:FindFirstChild("PickupObject")
-local PET_NAMES = {"Baby Dragon", "Cat", "Monkey", "Alien", "Dog", "Rat", "Worm", "Kangaroo"}
-
-local function clickPlaceButton()
-    local playerGui = LocalPlayerP:FindFirstChild("PlayerGui")
-    if playerGui then
-        local placementGui = playerGui:FindFirstChild("PlacementMobileGui")
-        if placementGui then
-            local placeBtn = placementGui:FindFirstChild("PlaceBtn")
-            if placeBtn and placeBtn:IsA("TextButton") then
-                local pos = placeBtn.AbsolutePosition
-                local size = placeBtn.AbsoluteSize
-                local x = pos.X + size.X/2
-                local y = pos.Y + size.Y/2
-                pcall(function()
-                    vim:SendMouseButtonEvent(x, y, 0, true, game, 0)
-                    task.wait(0.05)
-                    vim:SendMouseButtonEvent(x, y, 0, false, game, 0)
-                end)
-                return true
-            end
-        end
+local function startAntiAFK()
+    if antiAFKEnabled then
+        game:GetService("Players").LocalPlayer.Idled:Connect(function()
+            vu:CaptureController()
+            vu:ClickButton2(Vector2.new())
+        end)
     end
-    return false
 end
 
-local function getSelectedInventoryPets(selectedNames)
+SettingsTab:CreateToggle({
+   Name = "Anti-AFK",
+   CurrentValue = false,
+   Callback = function(v)
+        antiAFKEnabled = v
+        if antiAFKEnabled then
+            vu:CaptureController()
+            startAntiAFK()
+        end
+   end
+})
+
+-- ====================== PETS (WORKING) ======================
+local PlaceObject = Remotes:WaitForChild("PlaceObject")
+local PickupObject = Remotes:FindFirstChild("PickupObject")
+local PlaceResult = Remotes:WaitForChild("PlaceResult")
+local PET_NAMES = {"Baby Dragon", "Cat", "Monkey", "Alien", "Dog", "Rat", "Worm", "Kangaroo"}
+
+local function getPetBaseName(tool)
+    local name = tool.Name
+    return name:match("^(.-)%s*%(x%d+%)$") or name
+end
+
+local function getInventoryPets()
     local pets = {}
-    for _, tool in ipairs(LocalPlayerP.Backpack:GetChildren()) do
+    for _, tool in ipairs(LocalPlayer.Backpack:GetChildren()) do
         if tool:IsA("Tool") then
-            for _, selectedName in ipairs(selectedNames) do
-                if tool.Name:find(selectedName) then
+            for _, petName in ipairs(PET_NAMES) do
+                if tool.Name:find(petName) then
                     table.insert(pets, tool)
                     break
                 end
@@ -431,13 +434,27 @@ local function getSelectedInventoryPets(selectedNames)
     return pets
 end
 
-local function getPlacedPetNames()
-    local lot = workspace:FindFirstChild("PlayerLots") and workspace.PlayerLots:FindFirstChild(LocalPlayerP.Name)
+local function getPlacedPets()
+    local lot = getPlayerLot()
     if not lot then return {} end
-    local names = {}
+    local pets = {}
     for _, obj in ipairs(lot:GetChildren()) do
         for _, petName in ipairs(PET_NAMES) do
             if obj.Name == petName .. "_Placed" or obj.Name:find(petName) then
+                table.insert(pets, obj)
+                break
+            end
+        end
+    end
+    return pets
+end
+
+local function getPlacedPetNames()
+    local pets = getPlacedPets()
+    local names = {}
+    for _, pet in ipairs(pets) do
+        for _, petName in ipairs(PET_NAMES) do
+            if pet.Name:find(petName) then
                 names[petName] = true
                 break
             end
@@ -448,9 +465,24 @@ end
 
 local function placePet(petTool)
     if not petTool then return false end
-    petTool.Parent = LocalPlayerP.Character
-    task.wait(0.15)
-    return clickPlaceButton()
+    
+    local baseName = getPetBaseName(petTool)
+    petTool.Parent = LocalPlayer.Character
+    task.wait(0.5)
+    
+    local mouse = LocalPlayer:GetMouse()
+    local pos = mouse.Hit.p
+    local lot = getPlayerLot()
+    local pivotPart = lot and lot:FindFirstChild("Important") and lot.Important:FindFirstChild("Pivot")
+    
+    if pivotPart then
+        local relativePos = pivotPart.CFrame:ToObjectSpace(CFrame.new(pos))
+        pcall(function() PlaceObject:FireServer(baseName, relativePos) end)
+    else
+        pcall(function() PlaceObject:FireServer(baseName, pos) end)
+    end
+    task.wait(0.3)
+    return true
 end
 
 local function collectPet(petObject)
@@ -479,52 +511,53 @@ PetsTab:CreateDropdown({
 })
 
 PetsTab:CreateButton({
-   Name = "🐶 PLACE SELECTED PETS",
+   Name = "🐶 PLACE SELECTED PETS (MAX 5)",
    Callback = function()
        if #selectedPets == 0 then
            print("❌ Select pets from dropdown first!")
            return
        end
        
-       local placedPets = getPlacedPetNames()
-       local inventoryPets = getSelectedInventoryPets(selectedPets)
        local placed = 0
-       
-       for _, petTool in ipairs(inventoryPets) do
-           local alreadyPlaced = false
-           for _, petName in ipairs(selectedPets) do
-               if petTool.Name:find(petName) and placedPets[petName] then
-                   alreadyPlaced = true
-                   break
+       for attempt = 1, 10 do
+           if placed >= 5 then break end
+           if #getPlacedPets() >= 5 then break end
+           
+           local placedNames = getPlacedPetNames()
+           local inventoryPets = getInventoryPets()
+           local foundPet = nil
+           
+           for _, petTool in ipairs(inventoryPets) do
+               for _, selectedName in ipairs(selectedPets) do
+                   if petTool.Name:find(selectedName) and not placedNames[selectedName] then
+                       foundPet = petTool
+                       break
+                   end
                end
+               if foundPet then break end
            end
-           if not alreadyPlaced then
-               if placePet(petTool) then
+           
+           if foundPet then
+               if placePet(foundPet) then
                    placed = placed + 1
-                   task.wait(0.3)
+                   task.wait(0.5)
                end
+           else
+               break
            end
        end
-       print("✅ Placed pets: " .. placed)
+       print("✅ Placed: " .. placed .. " / 5")
    end
 })
-
-PetsTab:CreateLabel("📌 Max 5 pets can be placed at once")
 
 task.spawn(function()
     while true do
         task.wait(2)
         if autoCollectPets then
-            local lot = workspace:FindFirstChild("PlayerLots") and workspace.PlayerLots:FindFirstChild(LocalPlayerP.Name)
-            if lot then
-                for _, obj in ipairs(lot:GetChildren()) do
-                    for _, petName in ipairs(PET_NAMES) do
-                        if obj.Name == petName .. "_Placed" or obj.Name:find(petName) then
-                            collectPet(obj)
-                            task.wait(0.3)
-                        end
-                    end
-                end
+            local pets = getPlacedPets()
+            for _, pet in ipairs(pets) do
+                collectPet(pet)
+                task.wait(0.3)
             end
         end
     end
