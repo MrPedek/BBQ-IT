@@ -1,4 +1,4 @@
--- ====================== ZOV HUB | BBQ IT (FINAL) ======================
+-- ====================== ZOV HUB | BBQ IT (CLEAN) ======================
 local coreGui = game:GetService("CoreGui")
 if coreGui:FindFirstChild("Rayfield") then
     coreGui.Rayfield:Destroy()
@@ -16,22 +16,22 @@ local function MakeTheme(bg, top, element, hover, accent, accent2, text, muted)
         ElementBackground = element, ElementBackgroundHover = hover,
         SecondaryElementBackground = bg, ElementStroke = muted, SecondaryElementStroke = muted,
         SliderBackground = muted, SliderProgress = accent2, SliderStroke = accent,
-        ToggleBackground = hover, ToggleEnabled = accent, ToggleDisabled = Color3.fromRGB(90,90,90),
-        ToggleEnabledStroke = accent2, ToggleDisabledStroke = Color3.fromRGB(120,120,120),
-        ToggleEnabledOuterStroke = muted, ToggleDisabledOuterStroke = Color3.fromRGB(70,70,70),
+        ToggleBackground = hover, ToggleEnabled = accent, ToggleDisabled = Color3.fromRGB(100,100,110),
+        ToggleEnabledStroke = accent2, ToggleDisabledStroke = Color3.fromRGB(140,140,150),
+        ToggleEnabledOuterStroke = muted, ToggleDisabledOuterStroke = Color3.fromRGB(120,120,130),
         DropdownSelected = hover, DropdownUnselected = element,
-        InputBackground = element, InputStroke = muted, PlaceholderColor = Color3.fromRGB(160,160,170)
+        InputBackground = element, InputStroke = muted, PlaceholderColor = Color3.fromRGB(200,200,210)
     }
 end
 
 local Themes = {
-    MidnightPurple = MakeTheme(Color3.fromRGB(18,14,32), Color3.fromRGB(26,18,48), Color3.fromRGB(25,20,45), Color3.fromRGB(35,28,65), Color3.fromRGB(110,65,220), Color3.fromRGB(145,95,255), Color3.fromRGB(235,230,255), Color3.fromRGB(75,55,130)),
-    PhantomBlue = MakeTheme(Color3.fromRGB(8,13,28), Color3.fromRGB(12,22,48), Color3.fromRGB(14,25,52), Color3.fromRGB(20,36,75), Color3.fromRGB(45,115,255), Color3.fromRGB(85,155,255), Color3.fromRGB(225,238,255), Color3.fromRGB(45,80,145)),
-    BloodMoon = MakeTheme(Color3.fromRGB(28,8,13), Color3.fromRGB(45,12,18), Color3.fromRGB(50,16,22), Color3.fromRGB(75,22,32), Color3.fromRGB(210,35,60), Color3.fromRGB(255,70,95), Color3.fromRGB(255,230,235), Color3.fromRGB(130,40,55)),
-    ArcticWhite = MakeTheme(Color3.fromRGB(235,240,250), Color3.fromRGB(220,228,242), Color3.fromRGB(245,248,255), Color3.fromRGB(225,235,250), Color3.fromRGB(90,140,255), Color3.fromRGB(80,130,245), Color3.fromRGB(20,25,40), Color3.fromRGB(170,185,215)),
-    VoidGreen = MakeTheme(Color3.fromRGB(6,18,12), Color3.fromRGB(10,32,20), Color3.fromRGB(13,40,25), Color3.fromRGB(18,60,35), Color3.fromRGB(35,220,95), Color3.fromRGB(70,255,130), Color3.fromRGB(220,255,230), Color3.fromRGB(40,120,65)),
-    SunsetOrange = MakeTheme(Color3.fromRGB(32,16,8), Color3.fromRGB(55,25,10), Color3.fromRGB(60,30,14), Color3.fromRGB(85,42,18), Color3.fromRGB(255,120,35), Color3.fromRGB(255,150,60), Color3.fromRGB(255,235,215), Color3.fromRGB(150,75,35)),
-    RoseGold = MakeTheme(Color3.fromRGB(30,18,22), Color3.fromRGB(48,28,34), Color3.fromRGB(55,34,40), Color3.fromRGB(75,45,52), Color3.fromRGB(230,135,150), Color3.fromRGB(255,170,185), Color3.fromRGB(255,235,238), Color3.fromRGB(145,85,95))
+    MidnightPurple = MakeTheme(Color3.fromRGB(18,14,32), Color3.fromRGB(26,18,48), Color3.fromRGB(35,28,65), Color3.fromRGB(50,40,90), Color3.fromRGB(110,65,220), Color3.fromRGB(145,95,255), Color3.fromRGB(235,230,255), Color3.fromRGB(75,55,130)),
+    PhantomBlue = MakeTheme(Color3.fromRGB(8,13,28), Color3.fromRGB(12,22,48), Color3.fromRGB(20,36,75), Color3.fromRGB(35,55,105), Color3.fromRGB(45,115,255), Color3.fromRGB(85,155,255), Color3.fromRGB(225,238,255), Color3.fromRGB(45,80,145)),
+    BloodMoon = MakeTheme(Color3.fromRGB(28,8,13), Color3.fromRGB(45,12,18), Color3.fromRGB(75,22,32), Color3.fromRGB(105,35,50), Color3.fromRGB(210,35,60), Color3.fromRGB(255,70,95), Color3.fromRGB(255,230,235), Color3.fromRGB(130,40,55)),
+    ArcticWhite = MakeTheme(Color3.fromRGB(235,240,250), Color3.fromRGB(220,228,242), Color3.fromRGB(225,235,250), Color3.fromRGB(210,225,245), Color3.fromRGB(90,140,255), Color3.fromRGB(80,130,245), Color3.fromRGB(20,25,40), Color3.fromRGB(170,185,215)),
+    VoidGreen = MakeTheme(Color3.fromRGB(6,18,12), Color3.fromRGB(10,32,20), Color3.fromRGB(18,60,35), Color3.fromRGB(30,90,55), Color3.fromRGB(35,220,95), Color3.fromRGB(70,255,130), Color3.fromRGB(220,255,230), Color3.fromRGB(40,120,65)),
+    SunsetOrange = MakeTheme(Color3.fromRGB(32,16,8), Color3.fromRGB(55,25,10), Color3.fromRGB(85,42,18), Color3.fromRGB(120,60,30), Color3.fromRGB(255,120,35), Color3.fromRGB(255,150,60), Color3.fromRGB(255,235,215), Color3.fromRGB(150,75,35)),
+    RoseGold = MakeTheme(Color3.fromRGB(30,18,22), Color3.fromRGB(48,28,34), Color3.fromRGB(75,45,52), Color3.fromRGB(105,65,75), Color3.fromRGB(230,135,150), Color3.fromRGB(255,170,185), Color3.fromRGB(255,235,238), Color3.fromRGB(145,85,95))
 }
 
 local ChosenTheme = Themes.MidnightPurple
@@ -46,12 +46,27 @@ local Window = Rayfield:CreateWindow({
    KeySystem = false
 })
 
+-- Добавляем градиент на фон окна
+local function addGradient()
+    local rayfieldGui = game:GetService("CoreGui"):FindFirstChild("Rayfield")
+    if rayfieldGui then
+        local mainFrame = rayfieldGui:FindFirstChild("Main")
+        if mainFrame then
+            local gradient = Instance.new("UIGradient")
+            gradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(20,20,40))
+            }
+            gradient.Rotation = 45
+            gradient.Parent = mainFrame
+        end
+    end
+end
+
 local AutomationTab = Window:CreateTab("🤖 Automation", 4483362458)
 local PetsTab = Window:CreateTab("🐶 Pets", 4483362458)
 local ShopTab = Window:CreateTab("🛒 Shop", 4483362458)
 local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362458)
-
-AutomationTab:CreateLabel("✅ Working: Auto-Buy, Auto-Sell, Auto-Place Tables")
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -75,11 +90,6 @@ local AutoTotemsEnabled = false
 local CurrentSelectedGrill = ""
 local CurrentSelectedSmoker = ""
 local CurrentSelectedTable = ""
-
-local SelectedCookingStations = {} 
-local AutoLoadApplianceEnabled = false
-local AutoHarvestEnabled = false
-local AutoHarvestType = "Cooked"
 
 local MeatRegistry = {
     ["[Common] Raw Hotdog ($5)"] = { Name = "Raw Hotdog", Price = "$5" },
@@ -159,25 +169,6 @@ local function getPlayerLot()
     return nil
 end
 
-local function getCookingSpots()
-    local lot = getPlayerLot()
-    if not lot then return {} end
-    local spots = {}
-    for _, obj in ipairs(lot:GetChildren()) do
-        if not obj.Name:find("Totem") and not obj.Name:find("Table") and not obj.Name:find("Trophy") and not obj.Name:find("Rat") then
-            local grillSpots = obj:FindFirstChild("GrillSpots")
-            if grillSpots and grillSpots:IsA("Folder") then
-                for _, spot in ipairs(grillSpots:GetChildren()) do
-                    if spot:IsA("BasePart") and spot.Name == "Part" then
-                        table.insert(spots, spot)
-                    end
-                end
-            end
-        end
-    end
-    return spots
-end
-
 local function getTables()
     local lot = getPlayerLot()
     if not lot then return {} end
@@ -197,20 +188,26 @@ local function getTables()
     return tables
 end
 
-local function getRawMeat()
+local function getCookedMeat()
     local backpack = LocalPlayer.Backpack
     local character = LocalPlayer.Character
     if backpack then
         for _, tool in ipairs(backpack:GetChildren()) do
-            if tool:IsA("Tool") and tool.Name:lower():find("raw") then
-                return tool
+            if tool:IsA("Tool") then
+                local name = tool.Name:lower()
+                if name:find("cooked") or name:find("perfect") or name:find("overcooked") then
+                    return tool
+                end
             end
         end
     end
     if character then
         for _, tool in ipairs(character:GetChildren()) do
-            if tool:IsA("Tool") and tool.Name:lower():find("raw") then
-                return tool
+            if tool:IsA("Tool") then
+                local name = tool.Name:lower()
+                if name:find("cooked") or name:find("perfect") or name:find("overcooked") then
+                    return tool
+                end
             end
         end
     end
@@ -219,12 +216,12 @@ end
 
 AutomationTab:CreateSection("🪑 Table Automation")
 AutomationTab:CreateToggle({
-   Name = "Enable Auto-Place (Tables) 🍽️",
+   Name = "Auto-Place (Tables) 🍽️",
    CurrentValue = false,
    Callback = function(v) AutoPlaceEnabled = v end
 })
 AutomationTab:CreateToggle({
-   Name = "Auto Sell to NPCs 💰",
+   Name = "Auto Sell 💰",
    CurrentValue = false,
    Callback = function(Value)
       AutoSellEnabled = Value
@@ -232,44 +229,9 @@ AutomationTab:CreateToggle({
    end
 })
 
-AutomationTab:CreateSection("🍳 Grill & Smoker Automation")
-AutomationTab:CreateDropdown({
-   Name = "Target Cooking Stations 🏪",
-   Options = { "Grill", "Smoker" },
-   CurrentOption = {},
-   MultipleOptions = true,
-   Callback = function(Options) SelectedCookingStations = Options end,
-})
-AutomationTab:CreateToggle({
-   Name = "Auto-Load Meat onto Cooking Stations 🥩",
-   CurrentValue = false,
-   Callback = function(v) AutoLoadApplianceEnabled = v end
-})
-
-AutomationTab:CreateSection("🥩 Auto-Harvest Settings")
-AutomationTab:CreateToggle({
-   Name = "Enable Auto-Harvest 🌾",
-   CurrentValue = false,
-   Callback = function(v) AutoHarvestEnabled = v end
-})
-AutomationTab:CreateDropdown({
-   Name = "Harvest Type 📋",
-   Options = {"Cooked (including Perfect)", "Perfect only"},
-   CurrentOption = {"Cooked (including Perfect)"},
-   MultipleOptions = false,
-   Callback = function(Option)
-      local opt = type(Option) == "table" and Option[1] or Option
-      if opt:find("Cooked") then
-         AutoHarvestType = "Cooked"
-      else
-         AutoHarvestType = "Perfect"
-      end
-   end
-})
-
-ShopTab:CreateSection("🥩 Meats Auto-Buy")
+ShopTab:CreateSection("🥩 Auto-Buy Meats")
 ShopTab:CreateDropdown({
-   Name = "Select Meats to Auto-Buy 🍖",
+   Name = "Select Meats 🍖",
    Options = {
       "[Common] Raw Hotdog ($5)", "[Common] Raw Burger ($12)", "[Common] Raw Chicken Wing ($25)",
       "[Uncommon] Raw Bacon ($100)", "[Uncommon] Raw Porkchop ($250)", "[Uncommon] Raw Chicken ($500)",
@@ -286,7 +248,7 @@ ShopTab:CreateDropdown({
    Callback = function(Options) SelectedMeats = Options end,
 })
 ShopTab:CreateToggle({
-   Name = "Enable Auto-Buy Meats 💳",
+   Name = "Auto-Buy Meats 💳",
    CurrentValue = false,
    Callback = function(v) AutoBuyEnabled = v end
 })
@@ -303,7 +265,7 @@ ShopTab:CreateDropdown({
    Callback = function(Option) CurrentSelectedGrill = CleanItemName(Option) end,
 })
 ShopTab:CreateButton({
-   Name = "🛒 Buy Selected Grill",
+   Name = "Buy Selected Grill 🛒",
    Callback = function()
       if CurrentSelectedGrill and CurrentSelectedGrill ~= "" then
          pcall(function() BuyShopItemRemote:FireServer(CurrentSelectedGrill, false) end)
@@ -322,7 +284,7 @@ ShopTab:CreateDropdown({
    Callback = function(Option) CurrentSelectedSmoker = CleanItemName(Option) end,
 })
 ShopTab:CreateButton({
-   Name = "🛒 Buy Selected Smoker",
+   Name = "Buy Selected Smoker 🛒",
    Callback = function()
       if CurrentSelectedSmoker and CurrentSelectedSmoker ~= "" then
          pcall(function() BuyShopItemRemote:FireServer(CurrentSelectedSmoker, false) end)
@@ -338,7 +300,7 @@ ShopTab:CreateDropdown({
    Callback = function(Option) CurrentSelectedTable = CleanItemName(Option) end,
 })
 ShopTab:CreateButton({
-   Name = "🛒 Buy Selected Table",
+   Name = "Buy Selected Table 🛒",
    Callback = function()
       if CurrentSelectedTable and CurrentSelectedTable ~= "" then
          pcall(function() BuyShopItemRemote:FireServer(CurrentSelectedTable, false) end)
@@ -346,9 +308,9 @@ ShopTab:CreateButton({
    end,
 })
 
-ShopTab:CreateSection("🗿 Totems Auto-Buy")
+ShopTab:CreateSection("🗿 Totems")
 ShopTab:CreateDropdown({
-   Name = "Select Totems to Auto-Buy 💎",
+   Name = "Select Totems 💎",
    Options = {
       "Salt and Pepper Totem ($10k)", "Totem of Small Growth ($25k)", 
       "Totem of Medium Growth ($150k)", "Gold Totem ($1m)", 
@@ -358,14 +320,14 @@ ShopTab:CreateDropdown({
    Callback = function(Options) SelectedTotems = Options end,
 })
 ShopTab:CreateToggle({
-   Name = "Enable Auto-Buy Totems 🛡️",
+   Name = "Auto-Buy Totems 🛡️",
    CurrentValue = false,
    Callback = function(v) AutoTotemsEnabled = v end
 })
 
-SettingsTab:CreateSection("🎨 Interface")
+SettingsTab:CreateSection("🎨 Theme")
 SettingsTab:CreateDropdown({
-   Name = "Change UI Theme 🌈",
+   Name = "Change Theme 🌈",
    Options = {"MidnightPurple", "PhantomBlue", "BloodMoon", "ArcticWhite", "VoidGreen", "SunsetOrange", "RoseGold"},
    CurrentOption = {"MidnightPurple"},
    MultipleOptions = false,
@@ -385,29 +347,21 @@ SettingsTab:CreateSection("🛡️ Protection")
 local vu = game:GetService("VirtualUser")
 local antiAFKEnabled = false
 
-local function startAntiAFK()
-    if antiAFKEnabled then
-        game:GetService("Players").LocalPlayer.Idled:Connect(function()
-            vu:CaptureController()
-            vu:ClickButton2(Vector2.new())
-        end)
-    end
-end
-
 SettingsTab:CreateToggle({
    Name = "Anti-AFK",
    CurrentValue = false,
    Callback = function(v)
         antiAFKEnabled = v
         if antiAFKEnabled then
-            vu:CaptureController()
-            startAntiAFK()
+            game:GetService("Players").LocalPlayer.Idled:Connect(function()
+                vu:CaptureController()
+                vu:ClickButton2(Vector2.new())
+            end)
         end
    end
 })
 
--- ====================== PETS (ТОЛЬКО АВТО-СБОР) ======================
-local PlaceObject = Remotes:WaitForChild("PlaceObject")
+-- ====================== PETS (AUTO-COLLECT ONLY) ======================
 local PickupObject = Remotes:FindFirstChild("PickupObject")
 local PET_NAMES = {"Baby Dragon", "Cat", "Monkey", "Alien", "Dog", "Rat", "Worm", "Kangaroo"}
 
@@ -435,8 +389,6 @@ end
 local autoCollectPets = false
 
 PetsTab:CreateLabel("🐾 Pet Automation")
-PetsTab:CreateLabel("📌 Only Auto-Collect (Place function removed)")
-
 PetsTab:CreateToggle({
    Name = "Auto-Collect from Pets 🎒",
    CurrentValue = false,
@@ -459,84 +411,9 @@ end)
 -- ====================== MAIN LOOPS ======================
 task.spawn(function()
     while true do
-        task.wait(0.3)
-        if AutoLoadApplianceEnabled then
-            local rawMeat = getRawMeat()
-            if rawMeat then
-                if rawMeat.Parent ~= LocalPlayer.Character then
-                    rawMeat.Parent = LocalPlayer.Character
-                    task.wait(0.1)
-                end
-                local spots = getCookingSpots()
-                for _, spot in ipairs(spots) do
-                    local occupied = false
-                    for _, child in ipairs(spot:GetChildren()) do
-                        if child:IsA("Model") then
-                            occupied = true
-                            break
-                        end
-                    end
-                    if not occupied then
-                        pcall(function() PlaceMeatRemote:FireServer(spot, rawMeat.Name) end)
-                        task.wait(0.2)
-                        break
-                    end
-                end
-            end
-        end
-    end
-end)
-
-task.spawn(function()
-    while true do
-        task.wait(0.3)
-        if AutoHarvestEnabled then
-            local spots = getCookingSpots()
-            for _, spot in ipairs(spots) do
-                for _, child in ipairs(spot:GetChildren()) do
-                    if child:IsA("Model") then
-                        local name = child.Name:lower()
-                        local shouldTake = false
-                        if AutoHarvestType == "Cooked" then
-                            if name:find("cooked") or name:find("perfect") then
-                                shouldTake = true
-                            end
-                        elseif AutoHarvestType == "Perfect" then
-                            if name:find("perfect") then
-                                shouldTake = true
-                            end
-                        end
-                        if shouldTake then
-                            pcall(function() PickupMeatRemote:FireServer(spot) end)
-                            task.wait(0.15)
-                        end
-                    end
-                end
-            end
-        end
-    end
-end)
-
-task.spawn(function()
-    while true do
         task.wait(0.2)
         if AutoPlaceEnabled then
-            local cookedMeat = nil
-            for _, container in ipairs({LocalPlayer.Backpack, LocalPlayer.Character}) do
-                if container then
-                    for _, tool in ipairs(container:GetChildren()) do
-                        if tool:IsA("Tool") then
-                            local name = tool.Name:lower()
-                            if name:find("cooked") or name:find("perfect") or name:find("overcooked") then
-                                cookedMeat = tool
-                                break
-                            end
-                        end
-                    end
-                end
-                if cookedMeat then break end
-            end
-            
+            local cookedMeat = getCookedMeat()
             if cookedMeat then
                 if cookedMeat.Parent ~= LocalPlayer.Character then
                     cookedMeat.Parent = LocalPlayer.Character
@@ -592,6 +469,7 @@ end)
 task.spawn(function()
     task.wait(2)
     pcall(function() Window:ModifyTheme(ChosenTheme) end)
-    pcall(function() Window:ModifyTheme(ChosenTheme) end)
+    pcall(function() Window.ModifyTheme(ChosenTheme) end)
     ApplyThemeRealtime(ChosenTheme)
+    addGradient()
 end)
