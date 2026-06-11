@@ -1,4 +1,4 @@
--- ====================== ZOV HUB | BBQ IT (CLEAN) ======================
+-- ====================== ZOV HUB | BBQ IT (VISUAL UPDATE) ======================
 local coreGui = game:GetService("CoreGui")
 if coreGui:FindFirstChild("Rayfield") then
     coreGui.Rayfield:Destroy()
@@ -16,22 +16,22 @@ local function MakeTheme(bg, top, element, hover, accent, accent2, text, muted)
         ElementBackground = element, ElementBackgroundHover = hover,
         SecondaryElementBackground = bg, ElementStroke = muted, SecondaryElementStroke = muted,
         SliderBackground = muted, SliderProgress = accent2, SliderStroke = accent,
-        ToggleBackground = hover, ToggleEnabled = accent, ToggleDisabled = Color3.fromRGB(100,100,110),
-        ToggleEnabledStroke = accent2, ToggleDisabledStroke = Color3.fromRGB(140,140,150),
-        ToggleEnabledOuterStroke = muted, ToggleDisabledOuterStroke = Color3.fromRGB(120,120,130),
-        DropdownSelected = hover, DropdownUnselected = element,
-        InputBackground = element, InputStroke = muted, PlaceholderColor = Color3.fromRGB(200,200,210)
+        ToggleBackground = hover, ToggleEnabled = accent, ToggleDisabled = Color3.fromRGB(60,60,70),
+        ToggleEnabledStroke = accent2, ToggleDisabledStroke = Color3.fromRGB(150,150,160),
+        ToggleEnabledOuterStroke = muted, ToggleDisabledOuterStroke = Color3.fromRGB(100,100,110),
+        DropdownSelected = accent, DropdownUnselected = element,
+        InputBackground = element, InputStroke = muted, PlaceholderColor = Color3.fromRGB(180,180,190)
     }
 end
 
 local Themes = {
-    MidnightPurple = MakeTheme(Color3.fromRGB(18,14,32), Color3.fromRGB(26,18,48), Color3.fromRGB(35,28,65), Color3.fromRGB(50,40,90), Color3.fromRGB(110,65,220), Color3.fromRGB(145,95,255), Color3.fromRGB(235,230,255), Color3.fromRGB(75,55,130)),
-    PhantomBlue = MakeTheme(Color3.fromRGB(8,13,28), Color3.fromRGB(12,22,48), Color3.fromRGB(20,36,75), Color3.fromRGB(35,55,105), Color3.fromRGB(45,115,255), Color3.fromRGB(85,155,255), Color3.fromRGB(225,238,255), Color3.fromRGB(45,80,145)),
-    BloodMoon = MakeTheme(Color3.fromRGB(28,8,13), Color3.fromRGB(45,12,18), Color3.fromRGB(75,22,32), Color3.fromRGB(105,35,50), Color3.fromRGB(210,35,60), Color3.fromRGB(255,70,95), Color3.fromRGB(255,230,235), Color3.fromRGB(130,40,55)),
+    MidnightPurple = MakeTheme(Color3.fromRGB(18,14,32), Color3.fromRGB(26,18,48), Color3.fromRGB(35,28,65), Color3.fromRGB(55,45,95), Color3.fromRGB(110,65,220), Color3.fromRGB(145,95,255), Color3.fromRGB(235,230,255), Color3.fromRGB(75,55,130)),
+    PhantomBlue = MakeTheme(Color3.fromRGB(8,13,28), Color3.fromRGB(12,22,48), Color3.fromRGB(25,42,85), Color3.fromRGB(40,65,115), Color3.fromRGB(45,115,255), Color3.fromRGB(85,155,255), Color3.fromRGB(225,238,255), Color3.fromRGB(45,80,145)),
+    BloodMoon = MakeTheme(Color3.fromRGB(28,8,13), Color3.fromRGB(45,12,18), Color3.fromRGB(80,28,38), Color3.fromRGB(110,45,58), Color3.fromRGB(210,35,60), Color3.fromRGB(255,70,95), Color3.fromRGB(255,230,235), Color3.fromRGB(130,40,55)),
     ArcticWhite = MakeTheme(Color3.fromRGB(235,240,250), Color3.fromRGB(220,228,242), Color3.fromRGB(225,235,250), Color3.fromRGB(210,225,245), Color3.fromRGB(90,140,255), Color3.fromRGB(80,130,245), Color3.fromRGB(20,25,40), Color3.fromRGB(170,185,215)),
-    VoidGreen = MakeTheme(Color3.fromRGB(6,18,12), Color3.fromRGB(10,32,20), Color3.fromRGB(18,60,35), Color3.fromRGB(30,90,55), Color3.fromRGB(35,220,95), Color3.fromRGB(70,255,130), Color3.fromRGB(220,255,230), Color3.fromRGB(40,120,65)),
-    SunsetOrange = MakeTheme(Color3.fromRGB(32,16,8), Color3.fromRGB(55,25,10), Color3.fromRGB(85,42,18), Color3.fromRGB(120,60,30), Color3.fromRGB(255,120,35), Color3.fromRGB(255,150,60), Color3.fromRGB(255,235,215), Color3.fromRGB(150,75,35)),
-    RoseGold = MakeTheme(Color3.fromRGB(30,18,22), Color3.fromRGB(48,28,34), Color3.fromRGB(75,45,52), Color3.fromRGB(105,65,75), Color3.fromRGB(230,135,150), Color3.fromRGB(255,170,185), Color3.fromRGB(255,235,238), Color3.fromRGB(145,85,95))
+    VoidGreen = MakeTheme(Color3.fromRGB(6,18,12), Color3.fromRGB(10,32,20), Color3.fromRGB(20,65,40), Color3.fromRGB(35,100,60), Color3.fromRGB(35,220,95), Color3.fromRGB(70,255,130), Color3.fromRGB(220,255,230), Color3.fromRGB(40,120,65)),
+    SunsetOrange = MakeTheme(Color3.fromRGB(32,16,8), Color3.fromRGB(55,25,10), Color3.fromRGB(90,48,24), Color3.fromRGB(125,70,40), Color3.fromRGB(255,120,35), Color3.fromRGB(255,150,60), Color3.fromRGB(255,235,215), Color3.fromRGB(150,75,35)),
+    RoseGold = MakeTheme(Color3.fromRGB(30,18,22), Color3.fromRGB(48,28,34), Color3.fromRGB(80,50,58), Color3.fromRGB(110,72,82), Color3.fromRGB(230,135,150), Color3.fromRGB(255,170,185), Color3.fromRGB(255,235,238), Color3.fromRGB(145,85,95))
 }
 
 local ChosenTheme = Themes.MidnightPurple
@@ -46,19 +46,45 @@ local Window = Rayfield:CreateWindow({
    KeySystem = false
 })
 
--- Добавляем градиент на фон окна
-local function addGradient()
+-- Функция для добавления визуальных эффектов
+local function addVisualEffects()
     local rayfieldGui = game:GetService("CoreGui"):FindFirstChild("Rayfield")
     if rayfieldGui then
         local mainFrame = rayfieldGui:FindFirstChild("Main")
         if mainFrame then
+            -- Добавляем градиент
             local gradient = Instance.new("UIGradient")
             gradient.Color = ColorSequence.new{
                 ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(20,20,40))
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(25,20,45))
             }
             gradient.Rotation = 45
             gradient.Parent = mainFrame
+            
+            -- Добавляем свечение
+            local uiStroke = Instance.new("UIStroke")
+            uiStroke.Color = Color3.fromRGB(80,60,150)
+            uiStroke.Thickness = 1
+            uiStroke.Transparency = 0.5
+            uiStroke.Parent = mainFrame
+        end
+        
+        -- Добавляем скругление всем элементам
+        for _, obj in ipairs(rayfieldGui:GetDescendants()) do
+            if obj:IsA("Frame") or obj:IsA("ScrollingFrame") then
+                if not obj:FindFirstChild("UICorner") then
+                    local corner = Instance.new("UICorner")
+                    corner.CornerRadius = UDim.new(0, 8)
+                    corner.Parent = obj
+                end
+            end
+            if obj:IsA("TextButton") then
+                if not obj:FindFirstChild("UICorner") then
+                    local corner = Instance.new("UICorner")
+                    corner.CornerRadius = UDim.new(0, 6)
+                    corner.Parent = obj
+                end
+            end
         end
     end
 end
@@ -292,7 +318,7 @@ ShopTab:CreateButton({
    end,
 })
 
-ShopTab:CreateSection("🪟 Tables")
+ShopTab:CreateSection(" Tables")
 ShopTab:CreateDropdown({
    Name = "Select Table 🥂",
    Options = {"Plastic Table ($250)", "Picnic Table ($5k)", "Restaurant Table ($250k)", "Gold Table ($5m)"},
@@ -469,7 +495,7 @@ end)
 task.spawn(function()
     task.wait(2)
     pcall(function() Window:ModifyTheme(ChosenTheme) end)
-    pcall(function() Window.ModifyTheme(ChosenTheme) end)
+    pcall(function() Window:ModifyTheme(ChosenTheme) end)
     ApplyThemeRealtime(ChosenTheme)
-    addGradient()
+    addVisualEffects()
 end)
