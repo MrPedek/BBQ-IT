@@ -1,4 +1,4 @@
--- ====================== ZOV HUB | BBQ IT (FINAL VISUAL) ======================
+-- ====================== ZOV HUB | BBQ IT (FROSTED GLASS + DARK GRADIENT) ======================
 local coreGui = game:GetService("CoreGui")
 if coreGui:FindFirstChild("Rayfield") then
     coreGui.Rayfield:Destroy()
@@ -47,54 +47,62 @@ local Window = Rayfield:CreateWindow({
    KeySystem = false
 })
 
--- Эффект дыма/тумана на фоне
-local function addSmokeEffect()
+-- Эффект Frosted Glass + Dark Gradient
+local function addGlassEffect()
     local rayfieldGui = game:GetService("CoreGui"):FindFirstChild("Rayfield")
     if rayfieldGui then
         local mainFrame = rayfieldGui:FindFirstChild("Main")
         if mainFrame then
-            -- Градиент с эффектом дыма
+            -- Делаем фон полупрозрачным для эффекта стекла
+            mainFrame.BackgroundTransparency = 0.15
+            mainFrame.BackgroundColor3 = Color3.fromRGB(10,8,20)
+            
+            -- Основной градиент (Dark Gradient)
             local gradient = Instance.new("UIGradient")
             gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(10,8,20)),
-                ColorSequenceKeypoint.new(0.3, Color3.fromRGB(25,20,45)),
-                ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15,12,35)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(8,6,18))
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(20,15,40)),
+                ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15,12,35)),
+                ColorSequenceKeypoint.new(0.7, Color3.fromRGB(10,8,28)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(8,6,22))
             }
-            gradient.Rotation = 25
+            gradient.Rotation = 45
             gradient.Parent = mainFrame
             
-            -- Дополнительный слой для эффекта тумана
-            local smokeFrame = Instance.new("Frame")
-            smokeFrame.Size = UDim2.new(1, 0, 1, 0)
-            smokeFrame.BackgroundTransparency = 0.8
-            smokeFrame.BackgroundColor3 = Color3.fromRGB(40,35,60)
-            smokeFrame.BackgroundTransparency = 0.85
-            smokeFrame.Parent = mainFrame
+            -- Эффект матового стекла (Blur)
+            local blur = Instance.new("BlurEffect")
+            blur.Size = 8
+            blur.Parent = rayfieldGui
             
-            local smokeGradient = Instance.new("UIGradient")
-            smokeGradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(50,40,80)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(30,25,55)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(20,15,40))
+            -- Свечение по краям
+            local glowFrame = Instance.new("Frame")
+            glowFrame.Size = UDim2.new(1, 0, 1, 0)
+            glowFrame.BackgroundTransparency = 0.85
+            glowFrame.BackgroundColor3 = ChosenTheme.Accent or Color3.fromRGB(110,65,220)
+            glowFrame.Parent = mainFrame
+            
+            local glowGradient = Instance.new("UIGradient")
+            glowGradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(150,100,255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(80,50,180)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(40,25,100))
             }
-            smokeGradient.Rotation = -15
-            smokeGradient.Parent = smokeFrame
+            glowGradient.Rotation = -45
+            glowGradient.Parent = glowFrame
             
-            -- Тонкая светящаяся обводка для выбранных элементов
-            local uiStroke = Instance.new("UIStroke")
-            uiStroke.Color = Color3.fromRGB(120,80,220)
-            uiStroke.Thickness = 1.5
-            uiStroke.Transparency = 0.6
-            uiStroke.Parent = mainFrame
+            -- Тонкая светящаяся обводка
+            local stroke = Instance.new("UIStroke")
+            stroke.Color = ChosenTheme.Accent or Color3.fromRGB(110,65,220)
+            stroke.Thickness = 1.5
+            stroke.Transparency = 0.5
+            stroke.Parent = mainFrame
         end
         
-        -- Добавляем скругления и тени
+        -- Добавляем скругления
         for _, obj in ipairs(rayfieldGui:GetDescendants()) do
             if obj:IsA("Frame") or obj:IsA("ScrollingFrame") then
                 if not obj:FindFirstChild("UICorner") then
                     local corner = Instance.new("UICorner")
-                    corner.CornerRadius = UDim.new(0, 10)
+                    corner.CornerRadius = UDim.new(0, 12)
                     corner.Parent = obj
                 end
             end
@@ -103,14 +111,14 @@ local function addSmokeEffect()
                 corner.CornerRadius = UDim.new(0, 8)
                 corner.Parent = obj
             end
-            -- Добавляем обводку выбранным элементам в дропдаунах
+            -- Обводка выбранных элементов
             if obj:IsA("Frame") and obj.Name == "Selected" then
                 local stroke = obj:FindFirstChild("UIStroke")
                 if not stroke then
                     stroke = Instance.new("UIStroke")
                     stroke.Color = ChosenTheme.ToggleEnabledStroke
                     stroke.Thickness = 2
-                    stroke.Transparency = 0.3
+                    stroke.Transparency = 0.2
                     stroke.Parent = obj
                 end
             end
@@ -197,7 +205,6 @@ local function ApplyThemeRealtime(ThemeTable)
                 obj.BackgroundColor3 = ThemeTable.SliderProgress
             elseif obj.Name == "ToggleIndicator" or obj.Name == "Switch" or obj.Name == "Toggled" then
                 obj.BackgroundColor3 = ThemeTable.ToggleEnabled
-                -- Добавляем обводку включённым тоглам
                 local stroke = obj:FindFirstChild("UIStroke")
                 if not stroke then
                     stroke = Instance.new("UIStroke")
@@ -403,7 +410,8 @@ SettingsTab:CreateDropdown({
          pcall(function() Window:ModifyTheme(selectedTheme) end)
          pcall(function() Window.ModifyTheme(selectedTheme) end)
          ApplyThemeRealtime(selectedTheme)
-         addSmokeEffect()
+         task.wait(0.5)
+         addGlassEffect()
       end
    end,
 })
@@ -447,7 +455,7 @@ end
 
 local function collectPet(petObject)
     if PickupObject then
-        pcall(function() PickupObject:FireServer(petObject) end)
+pcall(function() PickupObject:FireServer(petObject) end)
     end
 end
 
@@ -457,7 +465,7 @@ PetsTab:CreateLabel("🐾 Pet Automation")
 PetsTab:CreateToggle({
    Name = "Auto-Collect from Pets 🎒",
    CurrentValue = false,
-Callback = function(v) autoCollectPets = v end
+   Callback = function(v) autoCollectPets = v end
 })
 
 task.spawn(function()
@@ -534,7 +542,7 @@ end)
 task.spawn(function()
     task.wait(2)
     pcall(function() Window:ModifyTheme(ChosenTheme) end)
-    pcall(function() Window.ModifyTheme(ChosenTheme) end)
+    pcall(function() Window:ModifyTheme(ChosenTheme) end)
     ApplyThemeRealtime(ChosenTheme)
-    addSmokeEffect()
+    addGlassEffect()
 end)
